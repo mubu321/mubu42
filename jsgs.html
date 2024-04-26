@@ -1,0 +1,79 @@
+<html lang="ja"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>跳ね返るゲーム</title>
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        background-color: #333; /* ダークモードの背景色 */
+        color: #fff; /* ダークモードのテキスト色 */
+    }
+    #gameCanvas {
+        display: block;
+        background-color: #333; /* キャンバスの背景色もダークモードに */
+    }
+    input[type="file"] {
+        color: #fff; /* ファイル選択ボタンのテキスト色をダークモードに */
+        background-color: #666; /* ファイル選択ボタンの背景色をダークモードに */
+        border: none;
+        padding: 10px 20px;
+        margin: 10px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+<input type="file" id="imageUpload" accept="image/*">
+<canvas id="gameCanvas" width="1912" height="958"></canvas>
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let image = new Image();
+
+    document.getElementById('imageUpload').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                image.src = e.target.result;
+                image.onload = function() {
+                    draw();
+                };
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    let x = 50;
+    let y = 50;
+    let dx = 5; // 速度を速めるよ
+    let dy = 5; // 速度を速めるよ
+    let imageSize = 150; // 画像のサイズ
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(image, x, y, imageSize, imageSize); // 画像のサイズを変更
+
+        if (x + imageSize > canvas.width || x < 0) {
+            dx = -dx;
+        }
+        if (y + imageSize > canvas.height || y < 0) {
+            dy = -dy;
+        }
+
+        x += dx;
+        y += dy;
+
+        requestAnimationFrame(draw);
+    }
+
+</script>
+
+
+</body></html>
